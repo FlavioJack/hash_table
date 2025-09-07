@@ -62,14 +62,17 @@ void insert_manual(Hashtable *ht, int index, int value, char *key){
     new_bucket->next = NULL;
 
     
-    if(ht->table[index]==NULL)
+    if(ht->table[index]==NULL){
         ht->table[index] = new_bucket;
+        printf("Inserted new element %s at index %d\n", key, index);
+    }
     else{
         Bucket *last_bucket = ht->table[index];
         while(last_bucket->next != NULL){
             last_bucket = last_bucket->next;
         }
         last_bucket->next = new_bucket;
+        printf("Inserted new element %s at index %d with collision\n", key, index);
     }
 }
 
@@ -79,5 +82,6 @@ void insert_manual(Hashtable *ht, int index, int value, char *key){
 int main(void){
 
     Hashtable *hashtable1 = create_table(N);
-
+    insert_manual(hashtable1, 3, 100, "flavio");
+    insert_manual(hashtable1, 3, 200, "flavio");
 }
