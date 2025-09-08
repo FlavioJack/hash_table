@@ -41,8 +41,8 @@ void insert_manual(Hashtable *ht, int index, int value, char *key){
         puts("Passed null hashtable");
         return;
     }
-    if(index >= ht->size && index < 0){ 
-        puts("Trying to access over the table bounds: index > talbe size.");
+    if(index >= ht->size || index < 0){ 
+        puts("Trying to insert new element over the table bounds.");
         return;
     }
     if(!key){ 
@@ -64,7 +64,6 @@ void insert_manual(Hashtable *ht, int index, int value, char *key){
     
     if(ht->table[index]==NULL){
         ht->table[index] = new_bucket;
-        printf("Inserted new element %s at index %d\n", key, index);
     }
     else{
         Bucket *last_bucket = ht->table[index];
@@ -72,7 +71,26 @@ void insert_manual(Hashtable *ht, int index, int value, char *key){
             last_bucket = last_bucket->next;
         }
         last_bucket->next = new_bucket;
-        printf("Inserted new element %s at index %d with collision\n", key, index);
+    }
+}
+
+void print_bucket(Hashtable *ht, int index){
+    if(!ht){
+        puts("Can't print null hashtable!");
+        return;
+    }   
+    if(index < 0 || index >= ht->size){
+        puts("Can't print, index over the table bound!");
+        return;
+    }
+    if(!ht->table || !ht->table[index]){
+        printf("Table not allocated or element at %d is empty\n", index);
+        return;
+    }
+    Bucket *bucket = ht->table[index];
+    while(bucket != NULL){
+        printf("Coppia chiave-valore: %s-%d\n",bucket->key, bucket->value);
+        bucket = bucket->next;
     }
 }
 
@@ -84,4 +102,7 @@ int main(void){
     Hashtable *hashtable1 = create_table(N);
     insert_manual(hashtable1, 3, 100, "flavio");
     insert_manual(hashtable1, 3, 200, "flavio");
+
+    print_bucket(NULL, 1);
+
 }
