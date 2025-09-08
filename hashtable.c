@@ -94,15 +94,46 @@ void print_bucket(Hashtable *ht, int index){
     }
 }
 
+int *search_manual(Hashtable *ht, int index, char *key){
+    if(!ht){
+        puts("Search won't start with null hashtable!");
+        return NULL;
+    }   
+    if(index < 0 || index >= ht->size){
+        puts("You are searching over the table bound!");
+        return NULL;
+    }
+    if(!ht->table || !ht->table[index]){
+        printf("Searching aborted: table not allocated or element at %d is empty\n", index);
+        return NULL;
+    }
+    Bucket *bucket = ht->table[index];
+    while(bucket != NULL){
+        int cmp = strcmp(bucket->key, key);
+        if(cmp == 0)
+            return &(bucket->value);
+        else bucket = bucket->next;
+    }
+    return NULL;
+}
+
 
 // MAIN
 
 int main(void){
 
     Hashtable *hashtable1 = create_table(N);
-    insert_manual(hashtable1, 3, 100, "flavio");
+    insert_manual(hashtable1, 3, 100, "giorgio");
     insert_manual(hashtable1, 3, 200, "flavio");
 
-    print_bucket(NULL, 1);
+    print_bucket(hashtable1, 3);
+    
+    int* result = search_manual(hashtable1, 3, "giorgio");
+    if (result) {
+        printf("Valore trovato: %d\n", *result);
+    } 
+    else {
+        printf("Chiave non trovata.\n");
+    }
 
 }
