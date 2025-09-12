@@ -117,7 +117,45 @@ int *search_manual(Hashtable *ht, int index, char *key){
     return NULL;
 }
 
+void delete_manual(Hashtable *ht, int index, char *key){
+    if(!ht){
+        puts("Search won't start with null hashtable!");
+        return;
+    }   
+    if(index < 0 || index >= ht->size){
+        puts("You are searching over the table bound!");
+        return;
+    }
+    if(!ht->table || !ht->table[index]){
+        printf("Searching aborted: table not allocated or element at %d is empty\n", index);
+        return;
+    }
+    if(!key){
+        puts("Inserted key to delete is null");
+        return;
+    }
+    Bucket *current = ht->table[index];
+    Bucket *prev = NULL;
+    Bucket *first = current;
 
+    while(current){
+        //effettuare nuovi collegamenti tra prev e next dopo aver eliminato nodo
+        //Quando elimini il primo nodo, devi aggiornare il puntatore nel tuo array per non perdere il riferimento.
+        // usare ptr prev e curr 
+        if(current->key == key){ // strcmp() da usare per confronto
+            if(current == first)
+                ht->table[index] = current->next;
+            else
+                prev->next = current->next;
+        
+            free(current);
+            return;
+        }
+        prev = current;
+        current = current->next;
+    }
+     
+}
 // MAIN
 
 int main(void){
