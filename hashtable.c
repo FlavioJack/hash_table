@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define N 10
+#define N 7 // BETTER IF PRIME NUMBER
 
 
 // STRUCTURES
@@ -15,11 +15,21 @@ typedef struct bucket{
 
 typedef struct hashtable{
     Bucket **table;
-    int size;
+    int size; // PRIME NUMBER
 }Hashtable;
 
 
 // FUNCTIONS
+
+unsigned long hash(const char *key){
+    unsigned long int hash = 5381;
+    int c;
+    
+    while((c=*key++)){
+        hash = hash*33 + c;
+    }
+    return hash;
+}
 
 Hashtable *create_table(int size){
     if(size>0){
@@ -87,9 +97,10 @@ void print_bucket(Hashtable *ht, int index){
         printf("Table not allocated or element at %d is empty\n", index);
         return;
     }
+    puts("Elementi presenti nella hash table: ");
     Bucket *bucket = ht->table[index];
     while(bucket != NULL){
-        printf("Coppia chiave-valore: %s-%d\n",bucket->key, bucket->value);
+        printf("\tCoppia chiave-valore: %s-%d\n",bucket->key, bucket->value);
         bucket = bucket->next;
     }
 }
@@ -136,25 +147,23 @@ void delete_manual(Hashtable *ht, int index, char *key){
     }
     Bucket *current = ht->table[index];
     Bucket *prev = NULL;
-    Bucket *first = current;
 
     while(current){
-        //effettuare nuovi collegamenti tra prev e next dopo aver eliminato nodo
-        //Quando elimini il primo nodo, devi aggiornare il puntatore nel tuo array per non perdere il riferimento.
-        // usare ptr prev e curr 
-        if(current->key == key){ // strcmp() da usare per confronto
-            if(current == first)
+        if( strcmp(current->key, key)==0 ){
+            if(!prev)
                 ht->table[index] = current->next;
             else
                 prev->next = current->next;
-        
+            
+            printf("Key \"%s\" with value |%d| deleted succesfully.\n", current->key, current->value);    
+            free(current->key);
             free(current);
             return;
         }
         prev = current;
         current = current->next;
     }
-     
+    
 }
 // MAIN
 
@@ -168,10 +177,11 @@ int main(void){
     
     int* result = search_manual(hashtable1, 3, "giorgio");
     if (result) {
-        printf("Valore trovato: %d\n", *result);
+        printf("Key's value is: %d\n", *result);
     } 
     else {
-        printf("Chiave non trovata.\n");
+        printf("Key not found.\n");
     }
-
+    
+    delete_manual(hashtable1, 3, "giorgio");
 }
