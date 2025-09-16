@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define N 7 // BETTER IF PRIME NUMBER
+#define N 7 // Better if prime numberR
 
 
 // STRUCTURES
@@ -15,13 +15,13 @@ typedef struct bucket{
 
 typedef struct hashtable{
     Bucket **table;
-    int size; // PRIME NUMBER
+    size_t size; 
 }Hashtable;
 
 
 // FUNCTIONS
 
-unsigned long hash(const char *key){
+unsigned long hash_djb2(const char *key){
     unsigned long int hash = 5381;
     int c;
     
@@ -46,17 +46,20 @@ Hashtable *create_table(int size){
     }
 }
 
-void insert_manual(Hashtable *ht, int index, int value, char *key){
+void insert(Hashtable *ht, int value, char *key){
     if(!ht){
         puts("Passed null hashtable");
         return;
     }
-    if(index >= ht->size || index < 0){ 
-        puts("Trying to insert new element over the table bounds.");
-        return;
-    }
     if(!key){ 
         puts("Key can't be null, it must be a string.");
+        return;
+    }
+
+    size_t index = hash_djb2(key) % ht->size;
+
+    if(index >= ht->size || index < 0){ 
+        puts("Trying to insert new element over the table bounds.");
         return;
     }
     
@@ -72,14 +75,13 @@ void insert_manual(Hashtable *ht, int index, int value, char *key){
     new_bucket->next = NULL;
 
     
-    if(ht->table[index]==NULL){
+    if(ht->table[index]==NULL)
         ht->table[index] = new_bucket;
-    }
     else{
         Bucket *last_bucket = ht->table[index];
-        while(last_bucket->next != NULL){
+        while(last_bucket->next != NULL)
             last_bucket = last_bucket->next;
-        }
+
         last_bucket->next = new_bucket;
     }
 }
@@ -163,15 +165,15 @@ void delete_manual(Hashtable *ht, int index, char *key){
         prev = current;
         current = current->next;
     }
-    
 }
+
 // MAIN
 
 int main(void){
 
     Hashtable *hashtable1 = create_table(N);
-    insert_manual(hashtable1, 3, 100, "giorgio");
-    insert_manual(hashtable1, 3, 200, "flavio");
+    insert(hashtable1, 100, "giorgio");
+    insert(hashtable1, 200, "flavio");
 
     print_bucket(hashtable1, 3);
     
@@ -185,3 +187,5 @@ int main(void){
     
     delete_manual(hashtable1, 3, "giorgio");
 }
+
+/* Here i learned strdup and strcmp functions of string.h */
