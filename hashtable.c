@@ -47,31 +47,25 @@ Hashtable *create_table(int size){
 }
 
 void insert(Hashtable *ht, int value, char *key){
-    if(!ht){
-        puts("Passed null hashtable");
-        return;
-    }
-    if(!key){ 
-        puts("Key can't be null, it must be a string.");
+    if(!ht || !key){
+        puts("Can't insert with null hashtable or null key!");
         return;
     }
 
     size_t index = hash_djb2(key) % ht->size;
 
     if(index >= ht->size || index < 0){ 
-        puts("Trying to insert new element over the table bounds.");
+        puts("Can't insert over the table boundaries!");
         return;
     }
     
     Bucket *new_bucket = (Bucket*)malloc(sizeof(Bucket));
     if(!new_bucket){
-        puts("New bucket allocation error.");
+        puts("New bucket allocation error!");
         return;
     }
     new_bucket->value = value;
     new_bucket->key = strdup(key); 
-    // strdup(char *) allocate char type of the copied string size... 
-    // ...and return pointer of the string with the copied string already inside.
     new_bucket->next = NULL;
 
     
@@ -84,40 +78,47 @@ void insert(Hashtable *ht, int value, char *key){
 
         last_bucket->next = new_bucket;
     }
+    puts("New element inserted succesfully!");
 }
 
-void print_bucket(Hashtable *ht, int index){
-    if(!ht){
-        puts("Can't print null hashtable!");
+void print_bucket(Hashtable *ht, const char *key){
+    if(!ht || !key){
+        puts("Can't print null hashtable or null key!");
         return;
     }   
+
+    size_t index = hash_djb2(key) % ht->size;
+
     if(index < 0 || index >= ht->size){
-        puts("Can't print, index over the table bound!");
+        puts("Can't print over the table boundaries!");
         return;
     }
     if(!ht->table || !ht->table[index]){
-        printf("Table not allocated or element at %d is empty\n", index);
+        printf("Table not allocated or element at %zu is empty!\n", index);
         return;
     }
-    puts("Elementi presenti nella hash table: ");
+    puts("Hash table elements: ");
     Bucket *bucket = ht->table[index];
     while(bucket != NULL){
-        printf("\tCoppia chiave-valore: %s-%d\n",bucket->key, bucket->value);
+        printf("\tCouple key-value: %s-%d;\n",bucket->key, bucket->value);
         bucket = bucket->next;
     }
 }
 
-int *search_manual(Hashtable *ht, int index, char *key){
-    if(!ht){
-        puts("Search won't start with null hashtable!");
+int *search(Hashtable *ht, char *key){
+    if(!ht || !key){
+        puts("Can't search with null hashtable or null key!");
         return NULL;
-    }   
+    }
+
+    size_t index = hash_djb2(key) % ht->size;
+   
     if(index < 0 || index >= ht->size){
-        puts("You are searching over the table bound!");
+        puts("Can't search over the table boundaries!");
         return NULL;
     }
     if(!ht->table || !ht->table[index]){
-        printf("Searching aborted: table not allocated or element at %d is empty\n", index);
+        printf("Searching aborted: table not allocated or element at %zu is empty!\n", index);
         return NULL;
     }
     Bucket *bucket = ht->table[index];
@@ -130,23 +131,23 @@ int *search_manual(Hashtable *ht, int index, char *key){
     return NULL;
 }
 
-void delete_manual(Hashtable *ht, int index, char *key){
-    if(!ht){
-        puts("Search won't start with null hashtable!");
+void delete(Hashtable *ht, char *key){
+    if(!ht || !key){
+        puts("Can't delete if null hashtable or null key!");
         return;
     }   
+
+    size_t index = hash_djb2(key) % ht->size;
+
     if(index < 0 || index >= ht->size){
-        puts("You are searching over the table bound!");
+        puts("Can't delete over the table boundaries!");
         return;
     }
     if(!ht->table || !ht->table[index]){
-        printf("Searching aborted: table not allocated or element at %d is empty\n", index);
+        printf("Deleting aborted: table not allocated or element at %zu is empty\n", index);
         return;
     }
-    if(!key){
-        puts("Inserted key to delete is null");
-        return;
-    }
+    
     Bucket *current = ht->table[index];
     Bucket *prev = NULL;
 
@@ -157,7 +158,7 @@ void delete_manual(Hashtable *ht, int index, char *key){
             else
                 prev->next = current->next;
             
-            printf("Key \"%s\" with value |%d| deleted succesfully.\n", current->key, current->value);    
+            printf("Key \"%s\" with value |%d| deleted succesfully!\n", current->key, current->value);    
             free(current->key);
             free(current);
             return;
@@ -175,17 +176,18 @@ int main(void){
     insert(hashtable1, 100, "giorgio");
     insert(hashtable1, 200, "flavio");
 
-    print_bucket(hashtable1, 3);
-    
-    int* result = search_manual(hashtable1, 3, "giorgio");
+    print_bucket(hashtable1, "giorgio");
+
+    int* result = search(hashtable1, "giorgio");
     if (result) {
-        printf("Key's value is: %d\n", *result);
+        printf("Key searched value is: %d\n", *result);
     } 
     else {
         printf("Key not found.\n");
     }
-    
-    delete_manual(hashtable1, 3, "giorgio");
+
+    delete(hashtable1, "giorgio");
+
 }
 
 /* Here i learned strdup and strcmp functions of string.h */
