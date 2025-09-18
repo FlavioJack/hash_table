@@ -46,7 +46,7 @@ Hashtable *create_table(int size){
     }
 }
 
-void insert(Hashtable *ht, int value, char *key){
+void insert(Hashtable *ht, int value, const char *key){
     if(!ht || !key){
         puts("Can't insert with null hashtable or null key!");
         return;
@@ -54,7 +54,7 @@ void insert(Hashtable *ht, int value, char *key){
 
     size_t index = hash_djb2(key) % ht->size;
 
-    if(index >= ht->size || index < 0){ 
+    if(index >= ht->size){ 
         puts("Can't insert over the table boundaries!");
         return;
     }
@@ -89,7 +89,7 @@ void print_bucket(Hashtable *ht, const char *key){
 
     size_t index = hash_djb2(key) % ht->size;
 
-    if(index < 0 || index >= ht->size){
+    if(index >= ht->size){
         puts("Can't print over the table boundaries!");
         return;
     }
@@ -105,7 +105,7 @@ void print_bucket(Hashtable *ht, const char *key){
     }
 }
 
-int *search(Hashtable *ht, char *key){
+int *search(Hashtable *ht, const char *key){
     if(!ht || !key){
         puts("Can't search with null hashtable or null key!");
         return NULL;
@@ -113,7 +113,7 @@ int *search(Hashtable *ht, char *key){
 
     size_t index = hash_djb2(key) % ht->size;
    
-    if(index < 0 || index >= ht->size){
+    if(index >= ht->size){
         puts("Can't search over the table boundaries!");
         return NULL;
     }
@@ -131,7 +131,7 @@ int *search(Hashtable *ht, char *key){
     return NULL;
 }
 
-void delete(Hashtable *ht, char *key){
+void delete(Hashtable *ht, const char *key){
     if(!ht || !key){
         puts("Can't delete if null hashtable or null key!");
         return;
@@ -139,7 +139,7 @@ void delete(Hashtable *ht, char *key){
 
     size_t index = hash_djb2(key) % ht->size;
 
-    if(index < 0 || index >= ht->size){
+    if(index >= ht->size){
         puts("Can't delete over the table boundaries!");
         return;
     }
