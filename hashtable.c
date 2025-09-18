@@ -168,6 +168,25 @@ void delete(Hashtable *ht, const char *key){
     }
 }
 
+void delete_hashtable(Hashtable *ht){
+    if(!ht){
+        puts("Can't delete if null hashtable!");
+        return;
+    }   
+    
+    for(size_t i = 0; i < ht->size; i++){
+        Bucket *current = ht->table[i];
+        while(current){
+            free(temp->key);
+            free(temp);
+            
+            current = current->next;
+        }
+    }    
+
+
+}
+
 // MAIN
 
 int main(void){
