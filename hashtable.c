@@ -102,6 +102,19 @@ void print_bucket(Hashtable *ht, const char *key){
     }
 }
 
+void print_table(Hashtable *ht){
+    if(!ht){
+        puts("Can't print null hashtable!");
+        return;   
+    }
+    for(size_t i=0; i<ht->size; i++){
+        Bucket *table = ht->table[i];
+        while(table){
+            /////
+        }
+    }
+}
+
 int *search(Hashtable *ht, const char *key){
     if(!ht || !key){
         puts("Can't search with null hashtable or null key!");
@@ -165,7 +178,7 @@ void delete(Hashtable *ht, const char *key){
     }
 }
 
-void delete_hashtable(Hashtable *ht){
+void delete_table(Hashtable *ht){
     if(!ht){
         puts("Can't delete if null hashtable!");
         return;
@@ -182,6 +195,7 @@ void delete_hashtable(Hashtable *ht){
     }    
     free(ht->table);
     free(ht);
+    puts("Table deleted succesfully!");
 }
 
 // MAIN
@@ -203,7 +217,7 @@ int main(void){
     }
 
     delete(hashtable1, "giorgio");
-
+    delete_table(hashtable1);
 }
 
 /* Here i learned strdup and strcmp functions of string.h */
