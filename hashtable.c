@@ -31,19 +31,16 @@ unsigned long hash_djb2(const char *key){
     return hash;
 }
 
-Hashtable *create_table(int size){
-    if(size>0){
-        Hashtable *new_hash = (Hashtable*)malloc(sizeof(Hashtable));
-        new_hash->size = size;
-
-        Bucket **new_table = (Bucket**)calloc(size, sizeof(Bucket*));
-        new_hash->table = new_table;
-        return new_hash;
-     }
-    else{
-        printf("You inserted %d but is an invalid size number!", size);
+Hashtable *create_table(size_t size){
+    if(size==0){
+        printf("You can't insert 0 as the size of the table");
         return NULL;
-    }
+    }    
+    Hashtable *new_hash = (Hashtable*)malloc(sizeof(Hashtable));
+    new_hash->size = size;
+    Bucket **new_table = (Bucket**)calloc(size, sizeof(Bucket*));
+    new_hash->table = new_table;
+    return new_hash;
 }
 
 void insert(Hashtable *ht, int value, const char *key){
@@ -177,14 +174,14 @@ void delete_hashtable(Hashtable *ht){
     for(size_t i = 0; i < ht->size; i++){
         Bucket *current = ht->table[i];
         while(current){
+            Bucket *temp = current;
             free(temp->key);
-            free(temp);
-            
+            free(temp);            
             current = current->next;
         }
     }    
-
-
+    free(ht->table);
+    free(ht);
 }
 
 // MAIN
