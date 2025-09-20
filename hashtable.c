@@ -56,6 +56,24 @@ void insert(Hashtable *ht, int value, const char *key){
         return;
     }
     
+    Bucket *current = ht->table[index];
+    while(current){   
+        short cmp = strcmp(current->key, key);
+        if(cmp == 0){
+            puts("Key duplicate. Do you want to overwrite? (y/n):");
+            char answer;
+            scanf(" %c", &answer);
+            if(answer == 'y' || answer == 'Y'){
+                current->value = value;
+                puts("New value overwritten succesfully");
+            }
+            else
+                puts("Operation cancelled!");
+            return;
+        }
+        current = current->next;
+    }
+     
     Bucket *new_bucket = (Bucket*)malloc(sizeof(Bucket));
     if(!new_bucket){
         puts("New bucket allocation error!");
@@ -63,18 +81,8 @@ void insert(Hashtable *ht, int value, const char *key){
     }
     new_bucket->value = value;
     new_bucket->key = strdup(key); 
-    new_bucket->next = NULL;
-
-    
-    if(ht->table[index]==NULL)
-        ht->table[index] = new_bucket;
-    else{
-        Bucket *last_bucket = ht->table[index];
-        while(last_bucket->next != NULL)
-            last_bucket = last_bucket->next;
-
-        last_bucket->next = new_bucket;
-    }
+    new_bucket->next = ht->table[index];
+    ht->table[index] = new_bucket; 
     puts("New element inserted succesfully!");
 }
 
