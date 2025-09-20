@@ -109,8 +109,12 @@ void print_table(Hashtable *ht){
     }
     for(size_t i=0; i<ht->size; i++){
         Bucket *table = ht->table[i];
-        while(table){
-            /////
+        if(table){
+            printf("Bucket of table number %zu:\n",i);
+            while(table){
+                printf("\tKey:\"%s\" || Value: %d\n",table->key, table->value);
+                table = table->next;
+            }
         }
     }
 }
@@ -205,8 +209,8 @@ int main(void){
     Hashtable *hashtable1 = create_table(N);
     insert(hashtable1, 100, "giorgio");
     insert(hashtable1, 200, "flavio");
-
-    print_bucket(hashtable1, "giorgio");
+    print_table(hashtable1);
+//    print_bucket(hashtable1, "giorgio");
 
     int* result = search(hashtable1, "giorgio");
     if (result) {
