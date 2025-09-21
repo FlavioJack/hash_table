@@ -210,16 +210,37 @@ void delete_table(Hashtable *ht){
     puts("Table deleted succesfully!");
 }
 
+void save_to_file(Hashtable *ht, const char *filename){
+    FILE *file = fopen(filename,"w");
+    if(!file){
+        puts("Error while trying to open file for saving table!");
+        return;
+    }
+    for(size_t i = 0; i < ht->size; i++){
+        Bucket *current = ht->table[i];
+        while(current){
+            fprintf(file, "Key: %s\tValue: %d\n", current->key, current->value);
+            current = current->next;
+        } 
+    }
+    fclose(file);
+    puts("File saved succesfully!");
+}
+
 // MAIN
 
 int main(void){
 
     Hashtable *hashtable1 = create_table(N);
-    insert(hashtable1, 100, "giorgio");
-    insert(hashtable1, 200, "flavio");
-    print_table(hashtable1);
-//    print_bucket(hashtable1, "giorgio");
-
+    insert(hashtable1, 21, "flavio");
+    insert(hashtable1, 26, "valentina");
+    insert(hashtable1, 17, "matteo");
+    insert(hashtable1, 31, "gabriele");
+    insert(hashtable1, 9, "taccio");
+    insert(hashtable1, 20, "mattia");
+//  print_table(hashtable1);
+//  print_bucket(hashtable1, "giorgio");
+/*
     int* result = search(hashtable1, "giorgio");
     if (result) {
         printf("Key searched value is: %d\n", *result);
@@ -227,8 +248,9 @@ int main(void){
     else {
         printf("Key not found.\n");
     }
-
-    delete(hashtable1, "giorgio");
+*/
+    save_to_file(hashtable1, "hashtable_saved.txt");
+//  delete(hashtable1, "flavio");
     delete_table(hashtable1);
 }
 
