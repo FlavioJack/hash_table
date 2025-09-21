@@ -2,8 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define N 7 // Better if prime numberR
-
+#define N 7 // Better if prime number
 
 // STRUCTURES
 
@@ -254,4 +253,4 @@ int main(void){
     delete_table(hashtable1);
 }
 
-/* Here i learned strdup and strcmp functions of string.h */
+/* Here i learned strdup and strcmp functions of string.h and fopen, fclose, fprintf, FILE *fp */
